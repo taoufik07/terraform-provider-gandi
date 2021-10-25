@@ -90,7 +90,7 @@ func resourceDNSSECKeyRead(d *schema.ResourceData, meta interface{}) (err error)
 		resDomain = parts[0]
 		id = parts[1]
 		if err = d.Set("id", id); err != nil {
-			return fmt.Errorf("Failed to set id for %s: %w", d.Id(), err)
+			return fmt.Errorf("failed to set id for %s: %w", d.Id(), err)
 		}
 	}
 
@@ -100,7 +100,7 @@ func resourceDNSSECKeyRead(d *schema.ResourceData, meta interface{}) (err error)
 	}
 
 	var found domain.DNSSECKey
-	var matchedKey bool = false
+	var matchedKey = false
 	for _, k := range keys {
 		if strconv.Itoa(k.ID) == id {
 			found = k
@@ -109,32 +109,31 @@ func resourceDNSSECKeyRead(d *schema.ResourceData, meta interface{}) (err error)
 		}
 	}
 	if !matchedKey {
-		err = fmt.Errorf("Cannot find DNSSEC key %s for domain %s", id, resDomain)
-		return
+		return fmt.Errorf("cannot find DNSSEC key %s for domain %s", id, resDomain)
 	}
 
 	if err = d.Set("algorithm", found.Algorithm); err != nil {
-		return fmt.Errorf("Failed to set algorithm for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set algorithm for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("type", found.Type); err != nil {
-		return fmt.Errorf("Failed to set type for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set type for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("public_key", found.PublicKey); err != nil {
-		return fmt.Errorf("Failed to set public key for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set public key for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("domain", resDomain); err != nil {
-		return fmt.Errorf("Failed to set domain for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set domain for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("digest", found.Digest); err != nil {
-		return fmt.Errorf("Failed to set digest for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set digest for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("digest_type", found.DigestType); err != nil {
-		return fmt.Errorf("Failed to set digest_type for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set digest_type for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("keytag", found.KeyTag); err != nil {
-		return fmt.Errorf("Failed to set keytag for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set keytag for %s: %w", d.Id(), err)
 	}
-	return
+	return nil
 }
 
 func resourceDNSSECKeyDelete(d *schema.ResourceData, meta interface{}) (err error) {
@@ -146,10 +145,9 @@ func resourceDNSSECKeyDelete(d *schema.ResourceData, meta interface{}) (err erro
 		domain = parts[0]
 		id = parts[1]
 		if err = d.Set("id", id); err != nil {
-			return fmt.Errorf("Failed to set id for %s: %w", d.Id(), err)
+			return fmt.Errorf("failed to set id for %s: %w", d.Id(), err)
 		}
 	}
 
-	err = client.DeleteDNSSECKey(domain, id)
-	return
+	return client.DeleteDNSSECKey(domain, id)
 }
